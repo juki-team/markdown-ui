@@ -7,8 +7,8 @@ import { ReactNode } from 'react';
 import '@juki-team/base-ui/styles.scss';
 
 const inter = Inter({
-  weight: ['100', '200', '300', '500', '700'],
-  subsets: ['latin'],
+  weight: [ '100', '200', '300', '500', '700' ],
+  subsets: [ 'latin' ],
   variable: '--font-primary',
   display: 'swap',
 });
@@ -16,13 +16,14 @@ const inter = Inter({
 export const metadata: Metadata = DEFAULT_METADATA;
 
 export default async function Layout({ children }: { children: ReactNode }) {
+  
   return (
     <html lang="en" className={inter.variable}>
-      <body className="jk-theme-light">
-        {children}
-        <JukiI18nInitializer />
-        <StylesLazy />
-      </body>
+    <body className="jk-theme-light">
+    {children}
+    <JukiI18nInitializer />
+    <StylesLazy />
+    </body>
     </html>
   );
 }

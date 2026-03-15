@@ -146,9 +146,10 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
   });
   const markdown = data?.success ? data.content : fallbackData;
   const [files, setFiles] = useState(markdown.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>);
+  const [name, setName] = useState(markdown.name);
 
   const newBodyString = JSON.stringify({
-    name: markdown.name,
+    name,
     files: orderFiles(files),
     tags: [],
     members: toEntityMembersDTO(markdown.members),
@@ -337,19 +338,38 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
     >
       <TemplatesModal isOpen={showTemplates} onClose={() => setShowTemplates(false)} onLoad={setCode} />
 
-      <div className="jk-row gap jk-pg-xsm">
+      <div className="jk-row gap jk-pg-xsm wh-100">
         <Link href="/">
           <Button type="ghost" icon={<ArrowBackIcon />} tooltipContent="back home" />
         </Link>
-        <div className="jk-row cr-at tx-l fw-br">Markdown Editor</div>
-
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            borderBottom: '1px solid transparent',
+            outline: 'none',
+            fontWeight: 'bold',
+            fontSize: 'inherit',
+            color: 'var(--t-color-primary)',
+            minWidth: '120px',
+            width: `${Math.max(name.length, 8)}ch`,
+            padding: '0 2px',
+            transition: 'border-color 150ms',
+          }}
+          onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--t-color-primary)')}
+          onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
+        />
+        <div className="flex-1" />
+        <Link href={`/${fallbackData.key}`}>
+          <Button size="small" type="ghost">
+            <T className="tt-se">view document</T>
+          </Button>
+        </Link>
         <Button onClick={() => setShowTemplates(true)} icon={<ExpandMoreIcon size="small" />} size="small" type="secondary">
           <T className="tt-se">templates</T>
         </Button>
-
-        <div className="flex-1" />
-
-        <div style={{ width: '1px', height: '20px', background: 'var(--t-color-gray-4)' }} />
       </div>
     </TwoContentLayout>
   );

@@ -112,7 +112,7 @@ export default function Page() {
   const { logout } = useJukiUser();
 
   return (
-    <div className="jk-col nowrap wh-100 stretch">
+    <div className="jk-col nowrap wh-100 stretch ow-ao ht-100">
       <div className="jk-col center gap">
         <div className="jk-col center gap jk-pg view-width jk-col jk-pg-lg-tb">
           <div style={{ fontSize: '3rem', lineHeight: 1 }}>📄</div>
@@ -220,7 +220,6 @@ export default function Page() {
           </div>
         )}
       </div>
-
       {isLogged && (
         <div className="jk-col nowrap stretch jk-pg">
           <div className="fw-bd tt-se cr-g4 tx-s" style={{ marginBottom: 'var(--pad-sm)' }}>
