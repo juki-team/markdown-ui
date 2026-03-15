@@ -12,8 +12,8 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@juki-team/base-ui':
-        specifier: ^1.4.68
-        version: 1.4.68(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
+        specifier: ^1.4.69
+        version: 1.4.69(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
       '@juki-team/commons':
         specifier: ^0.1.4
         version: 0.1.4
@@ -604,8 +604,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@juki-team/base-ui@1.4.68':
-    resolution: {integrity: sha512-wh88KCsvMLfhw38xebfDyYj3tTtHb9wB6xylYkKObMY4bH3327NhR/b39M9N7MvQynsyVHt44M2jB7Mu5jz5VA==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.68/f96d120aac6443f211acd40e75c3d30c5be6746c}
+  '@juki-team/base-ui@1.4.69':
+    resolution: {integrity: sha512-Q3waFAmE2oZhF+AuHaLJz5hddcVooeHxYoKR+spjWatQXCaactpLiJJHvqODealwbculr9A18a7aPyNEpKYQGQ==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.69/6aab1a80f5a0078eb5d1464662d7278343e05952}
     engines: {node: '>=24'}
     peerDependencies:
       '@ably/spaces': ^0.5.2
@@ -1821,6 +1821,9 @@ packages:
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
+
+  codemirror-lang-mermaid@0.5.0:
+    resolution: {integrity: sha512-Taw/2gPCyNArQJCxIP/HSUif+3zrvD+6Ugt7KJZ2dUKou/8r3ZhcfG8krNTZfV2iu8AuGnymKuo7bLPFyqsh/A==}
 
   codemirror@6.0.2:
     resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
@@ -4984,7 +4987,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@juki-team/base-ui@1.4.68(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
+  '@juki-team/base-ui@1.4.69(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
     dependencies:
       '@ably/spaces': 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@ai-sdk/react': 3.0.118(react@19.2.4)(zod@4.3.6)
@@ -5026,6 +5029,7 @@ snapshots:
       ably: 2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       ai: 6.0.116(zod@4.3.6)
       codemirror: 6.0.2
+      codemirror-lang-mermaid: 0.5.0
       countries-and-timezones: 3.8.0
       diff: 8.0.3
       diff2html: 3.4.56
@@ -6547,6 +6551,12 @@ snapshots:
   clsx@1.1.1: {}
 
   clsx@2.1.1: {}
+
+  codemirror-lang-mermaid@0.5.0:
+    dependencies:
+      '@codemirror/language': 6.12.2
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.8
 
   codemirror@6.0.2:
     dependencies:
