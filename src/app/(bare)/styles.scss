@@ -1,1 +1,7 @@
-@use "@juki-team/base-ui/styles/mixins" as utils;
+@use "@juki-team/base-ui/styles/mixins";
+
+.jk-code-viewer-content {
+  * {
+    @include mixins.font-size(s);
+  }
+}

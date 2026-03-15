@@ -4,8 +4,8 @@ import { DEFAULT_METADATA } from 'config/constants';
 import { get, oneTab } from 'helpers';
 import { type Metadata } from 'next';
 import { ContentResponse, MarkdownResponseDTO, MetadataResponseDTO } from 'types';
-import { MarkdownNotFoundCard } from '../e/[markdownKey]/MarkdownNotFoundCard';
-import { MarkdownReadPage } from './MarkdownReadPage';
+import { MarkdownNotFoundCard } from './MarkdownNotFoundCard';
+import { MarkdownViewPage } from './MarkdownViewPage';
 
 type Props = {
   params: Promise<{ markdownKey: string }>;
@@ -37,13 +37,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function MarkdownReadDocumentPage({ params }: Props) {
+export default async function MarkdownDocumentPage({ params }: Props) {
   const markdownKey = (await params).markdownKey;
 
   const markdownResponse = await get<ContentResponse<MarkdownResponseDTO>>(jukiApiManager.API_V2.markdown.getData({ params: { key: markdownKey } }).url);
 
   if (markdownResponse.success) {
-    return <MarkdownReadPage markdown={markdownResponse.content} />;
+    return <MarkdownViewPage markdown={markdownResponse.content} />;
   }
 
   return <TwoContentLayout tabs={oneTab(<MarkdownNotFoundCard />)} />;

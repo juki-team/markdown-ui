@@ -2,15 +2,15 @@
 
 body {
   margin: 0;
-  overflow: visible;
-
+  //overflow: visible;
+  
   #juki-app {
-    overflow: auto !important;
+    //overflow: auto !important;
   }
 }
 
 :root {
-  --max-read-width: 64ch;
+  --max-read-width: 80ch;
   --max-view-width: 100ch;
 }
 
@@ -59,7 +59,7 @@ body {
   width: 100%;
   overflow: auto;
   height: calc(var(--100VH) - 200px);
-
+  
   .language-dot {
     overflow: initial !important;
   }

@@ -225,7 +225,6 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
         }[]
       ).forEach((part, i) => {
         if (part?.type === 'tool-suggestMarkdown' && part?.state === 'output-available') {
-          console.log({ part });
           const key = `${message.id}-${i}`;
           if (!appliedPartsRef.current.has(key) && typeof part?.output?.data?.content === 'string') {
             appliedPartsRef.current.add(key);
