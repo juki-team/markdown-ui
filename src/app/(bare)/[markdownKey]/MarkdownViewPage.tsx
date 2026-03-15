@@ -236,6 +236,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
       });
     }
   });
+  const storeKey = `markdown-${markdown.key}`;
 
   return (
     <TwoContentLayout
@@ -297,7 +298,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                         },
                       }
                 }
-                storeKey={`markdown-${markdown.key}`}
+                storeKey={storeKey}
                 languages={[{ value: CodeLanguage.MARKDOWN, label: 'Markdown' }]}
                 onCurrentFileNameChange={setCurrentFileName}
                 onFilesChange={setFiles}
@@ -309,7 +310,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
             getBodyRef={getBodyRef}
             onMessagesChangeRef={onMessagesChangeRef}
             api="/api/chat/md-math"
-            storeKey={markdown.key + '.md'}
+            storeKey={storeKey}
             onWidthChange={(width) => setEditorWidth(`calc(100% - ${width}px)`)}
             actions={({ setPendingParts }) => {
               return [

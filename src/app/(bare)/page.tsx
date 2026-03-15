@@ -141,7 +141,7 @@ export default function Page() {
             <>
               <T className="tt-se cr-g5 tx-s">signed in as</T>
               <UserChip imageUrl={imageUrl} nickname={nickname} companyKey={company.key} />
-              <ButtonLoader size="tiny" onClick={(setLoader) => logout({ setLoader })} type="tertiary" icon={<LogoutIcon />}>
+              <ButtonLoader size="tiny" onClick={(setLoader) => logout({ setLoader })} type="secondary" icon={<LogoutIcon />}>
                 <T className="ws-np tt-se">sign out</T>
               </ButtonLoader>
             </>

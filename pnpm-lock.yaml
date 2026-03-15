@@ -12,8 +12,8 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@juki-team/base-ui':
-        specifier: ^1.4.59
-        version: 1.4.59(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
+        specifier: ^1.4.62
+        version: 1.4.62(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
       '@juki-team/commons':
         specifier: ^0.1.4
         version: 0.1.4
@@ -604,8 +604,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@juki-team/base-ui@1.4.59':
-    resolution: {integrity: sha512-9+y/GjORTUonwwGszmeWvabQiADuzQTkzHhn5oQRRXp9/B4LKM3aBhGdd4b9BIxQL4y4lWFPX14OmSR86gd9hw==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.59/4f8b1583335a06842c1c916f55471ab443db44ab}
+  '@juki-team/base-ui@1.4.62':
+    resolution: {integrity: sha512-Ag+axKwGc1/q5MUCbzyGKYxXMGxcGIH5MCe805o36aFcpG6k5i7xeIUw2sJin2cVQzHX2/t0muXbkAkTY9bAiA==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.62/885dcc5edb35827aa9e15b2ec4706557ee5a25a5}
     engines: {node: '>=24'}
     peerDependencies:
       '@ably/spaces': ^0.5.2
@@ -4984,7 +4984,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@juki-team/base-ui@1.4.59(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
+  '@juki-team/base-ui@1.4.62(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
     dependencies:
       '@ably/spaces': 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@ai-sdk/react': 3.0.118(react@19.2.4)(zod@4.3.6)
