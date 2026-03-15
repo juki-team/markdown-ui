@@ -6,12 +6,12 @@ export type {
   PingResponseDTO,
   ContentsResponse,
   MetadataResponseDTO,
-  MermaidResponseDTO,
+  MarkdownResponseDTO,
   EntityMembersResponseDTO,
   CodeEditorFiles,
 } from '@juki-team/commons';
 
-export type { DataViewerHeadersType, UserCodeEditorProps } from '@juki-team/base-ui/types';
+export type { DataViewerHeadersType, UserCodeEditorProps, UserCodeEditorHandle } from '@juki-team/base-ui/types';
 
 export type { ImageCmpProps } from '@juki-team/base-ui/types';
 

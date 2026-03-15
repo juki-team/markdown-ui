@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['markdown.local.juki.app'],
+  allowedDevOrigins: ['md.local.juki.app'],
   images: {
     remotePatterns: [
       {

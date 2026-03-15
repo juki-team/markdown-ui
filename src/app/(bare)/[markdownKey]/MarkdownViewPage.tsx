@@ -1,5 +1,8 @@
 'use client';
 
+import { AiChatPanel } from '@juki-team/base-ui';
+import { CODE_LANGUAGE } from '@juki-team/commons';
+import { UIMessage } from 'ai';
 import {
   ArrowBackIcon,
   Button,
@@ -18,8 +21,9 @@ import { jukiApiManager } from 'config';
 import { JUKI_SERVICE_V2_URL } from 'config/constants';
 import { authorizedRequest, classNames, cleanRequest, contentResponse, getUserKey, oneTab } from 'helpers';
 import { useFetcher, useStableRef, useUIStore, useUserStore } from 'hooks';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { CodeEditorFiles, CodeLanguage, ContentResponse, EntityMembersResponseDTO, MermaidResponseDTO, UserCodeEditorProps } from 'types';
+import { CSSProperties, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import type { UserCodeEditorHandle } from 'types';
+import { CodeEditorFiles, CodeLanguage, ContentResponse, EntityMembersResponseDTO, MarkdownResponseDTO } from 'types';
 import { DEFAULT_MARKDOWN_CODE, MARKDOWN_TEMPLATES } from './markdown-templates';
 
 const TEMPLATE_CATEGORIES = ['All', ...Array.from(new Set(MARKDOWN_TEMPLATES.map((t) => t.category)))];
@@ -61,7 +65,7 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
 
         <div className="jk-row gap">
           {TEMPLATE_CATEGORIES.map((cat) => (
-            <Button key={cat} onClick={() => setActiveCategory(cat)} size="tiny" type={activeCategory === cat ? 'accent' : 'light'}>
+            <Button key={cat} onClick={() => setActiveCategory(cat)} size="tiny" type={activeCategory === cat ? 'primary' : 'secondary'}>
               {cat}
             </Button>
           ))}
@@ -76,7 +80,7 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
                   onLoad(template.code);
                   onClose();
                 }}
-                type="text"
+                type="ghost"
                 className="jk-br-ie"
                 style={{
                   textAlign: 'left',
@@ -131,13 +135,13 @@ const orderFiles = (files: CodeEditorFiles<CodeLanguage.MARKDOWN>) => {
   return filesArray;
 };
 
-export function MarkdownViewPage({ markdown: fallbackData }: { markdown: MermaidResponseDTO }) {
+export function MarkdownViewPage({ markdown: fallbackData }: { markdown: MarkdownResponseDTO }) {
   const {
     data,
     isLoading,
     isValidating,
     mutate: reloadMarkdown,
-  } = useFetcher<ContentResponse<MermaidResponseDTO>>(jukiApiManager.API_V2.mermaid.getData({ params: { key: fallbackData.key } }).url, {
+  } = useFetcher<ContentResponse<MarkdownResponseDTO>>(jukiApiManager.API_V2.markdown.getData({ params: { key: fallbackData.key } }).url, {
     fallbackData: JSON.stringify(contentResponse('fallback data', fallbackData)),
   });
   const markdown = data?.success ? data.content : fallbackData;
@@ -166,7 +170,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(async () => {
-      const { url, ...options } = jukiApiManager.API_V2.mermaid.updateData({
+      const { url, ...options } = jukiApiManager.API_V2.markdown.updateData({
         params: { key: fallbackData.key },
         body: body as never,
       });
@@ -185,13 +189,14 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
   const user = useUserStore((store) => store.user);
   const [currentFileName, setCurrentFileName] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
-
-  const setFileCbRef = useRef<Parameters<NonNullable<UserCodeEditorProps<CodeLanguage.MARKDOWN>['setSetFile']>>[0]>(null);
+  const [editorWidth, setEditorWidth] = useState<string>('');
+  const userCodeEditorRef = useRef<UserCodeEditorHandle | null>(null);
   const filesRef = useStableRef(files);
+
   const setCode = useCallback(
     (source: string) => {
       if (filesRef.current[currentFileName]?.source !== source) {
-        setFileCbRef.current?.(currentFileName, {
+        userCodeEditorRef.current?.setFile(currentFileName, {
           ...filesRef.current[currentFileName],
           source,
         });
@@ -199,12 +204,38 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
     },
     [currentFileName, filesRef],
   );
-  const setCodeRef = useStableRef(setCode);
-  void setCodeRef;
 
-  const setSetFile = useCallback((setFileCb: Parameters<NonNullable<UserCodeEditorProps<CodeLanguage.MARKDOWN>['setSetFile']>>[0]) => {
-    setFileCbRef.current = setFileCb;
-  }, []);
+  const { source, language } = files?.[currentFileName] || { source: '', language: CodeLanguage.TEXT };
+  const getBodyRef = useRef(() => {
+    const selectedSource = userCodeEditorRef.current?.markdownGetSelection() ?? '';
+    if (selectedSource) {
+      userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+    }
+    return { source: language === CodeLanguage.MARKDOWN ? source : '', selectedSource };
+  });
+
+  const appliedPartsRef = useRef<Set<string>>(new Set());
+  const onMessagesChangeRef = useRef((messages: UIMessage[]) => {
+    for (const message of messages) {
+      (
+        message.parts as {
+          type: string;
+          output: { data: { content: string } };
+          state: string;
+        }[]
+      ).forEach((part, i) => {
+        if (part?.type === 'tool-suggestMarkdown' && part?.state === 'output-available') {
+          console.log({ part });
+          const key = `${message.id}-${i}`;
+          if (!appliedPartsRef.current.has(key) && typeof part?.output?.data?.content === 'string') {
+            appliedPartsRef.current.add(key);
+            userCodeEditorRef.current?.markdownReplaceSelectionWithMarkdown(part.output?.data?.content);
+            userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+          }
+        }
+      });
+    }
+  });
 
   return (
     <TwoContentLayout
@@ -232,7 +263,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
           managers={{}}
           spectators={{}}
           documentOwner={markdown.owner}
-          saveUrl={`${JUKI_SERVICE_V2_URL}/mermaid/${markdown.key}/members`}
+          saveUrl={`${JUKI_SERVICE_V2_URL}/markdown/${markdown.key}/members`}
           isAdministrator={getUserKey(markdown.owner.nickname, markdown.owner.company.key) === getUserKey(user.nickname, user.company.key)}
           documentName={markdown.name}
           copyLink={() => (typeof window !== 'undefined' ? window.location.href : '')}
@@ -240,39 +271,67 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
         />,
       ]}
       tabs={oneTab(
-        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}>
-          <Suspense
-            fallback={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <LoadingIcon />
-              </div>
-            }
-          >
-            <UserCodeEditor<CodeLanguage.MARKDOWN>
-              initialFiles={
-                fallbackData.files && Object.keys(fallbackData.files).length > 0
-                  ? (fallbackData.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>)
-                  : {
-                      'document.md': {
-                        source: DEFAULT_MARKDOWN_CODE,
-                        language: CodeLanguage.MARKDOWN,
-                        index: 0,
-                        name: 'document.md',
-                        hidden: false,
-                        readonly: false,
-                        protected: false,
-                      },
-                    }
+        <div className="jk-row nowrap gap top ht-100" style={{ '--chat-right-panel-width': 'calc(100vw / 3.5)' } as CSSProperties}>
+          <div className="flex-1 ht-100" style={{ maxWidth: editorWidth }}>
+            <Suspense
+              fallback={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                  <LoadingIcon />
+                </div>
               }
-              setSetFile={setSetFile}
-              storeKey={`markdown-${markdown.key}`}
-              languages={[{ value: CodeLanguage.MARKDOWN, label: 'Markdown' }]}
-              onCurrentFileNameChange={setCurrentFileName}
-              onFilesChange={setFiles}
-              onlyCodeEditor
-              withoutRunCodeButton
-            />
-          </Suspense>
+            >
+              <UserCodeEditor<CodeLanguage.MARKDOWN>
+                ref={userCodeEditorRef}
+                initialFiles={
+                  fallbackData.files && Object.keys(fallbackData.files).length > 0
+                    ? (fallbackData.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>)
+                    : {
+                        'document.md': {
+                          source: DEFAULT_MARKDOWN_CODE,
+                          language: CodeLanguage.MARKDOWN,
+                          index: 0,
+                          name: 'document.md',
+                          hidden: false,
+                          readonly: false,
+                          protected: false,
+                        },
+                      }
+                }
+                storeKey={`markdown-${markdown.key}`}
+                languages={[{ value: CodeLanguage.MARKDOWN, label: 'Markdown' }]}
+                onCurrentFileNameChange={setCurrentFileName}
+                onFilesChange={setFiles}
+                withoutRunCodeButton
+              />
+            </Suspense>
+          </div>
+          <AiChatPanel
+            getBodyRef={getBodyRef}
+            onMessagesChangeRef={onMessagesChangeRef}
+            api="/api/chat/md-math"
+            storeKey={markdown.key + '.md'}
+            onWidthChange={(width) => setEditorWidth(`calc(100% - ${width}px)`)}
+            actions={({ setPendingParts }) => {
+              return [
+                <Button
+                  key="load-all-files"
+                  type="ghost"
+                  size="tiny"
+                  onClick={() => {
+                    const parts = Object.values(files).map((file) => ({
+                      type: 'file' as const,
+                      name: file.name,
+                      mediaType: CODE_LANGUAGE[file.language]?.mime || 'text/plain',
+                      url: `data:text/plain;base64,${btoa(String.fromCharCode(...new TextEncoder().encode(file.source)))}`,
+                    }));
+                    setPendingParts(parts);
+                  }}
+                >
+                  load all files
+                </Button>,
+              ];
+            }}
+          />
         </div>,
       )}
     >
@@ -280,11 +339,11 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Mermaid
 
       <div className="jk-row gap jk-pg-xsm">
         <Link href="/">
-          <Button type="text" icon={<ArrowBackIcon />} tooltipContent="back home" />
+          <Button type="ghost" icon={<ArrowBackIcon />} tooltipContent="back home" />
         </Link>
         <div className="jk-row cr-at tx-l fw-br">Markdown Editor</div>
 
-        <Button onClick={() => setShowTemplates(true)} icon={<ExpandMoreIcon size="small" />} size="small" type="light">
+        <Button onClick={() => setShowTemplates(true)} icon={<ExpandMoreIcon size="small" />} size="small" type="secondary">
           <T className="tt-se">templates</T>
         </Button>
 

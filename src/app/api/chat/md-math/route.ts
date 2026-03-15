@@ -12,10 +12,15 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  const { messages, source, selectedSource }: { messages: UIMessage[]; source: string; selectedSource: string } = await req.json();
+  const {
+    messages,
+    source,
+    selectedSource,
+    model = 'anthropic/claude-sonnet-4.5',
+  }: { messages: UIMessage[]; source: string; selectedSource: string; model?: string } = await req.json();
 
   const result = streamText({
-    model: 'anthropic/claude-sonnet-4.5',
+    model,
     system: `Eres un experto en escritura técnica y documentación en Markdown.
 
 Tu único objetivo es ayudar al usuario a crear, mejorar y estructurar documentos Markdown.

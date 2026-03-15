@@ -23,9 +23,9 @@ import { EMPTY_ENTITY_MEMBERS } from 'config/constants';
 import { authorizedRequest, cleanRequest, toFilterUrl, toSortUrl } from 'helpers';
 import { useJukiNotification, useJukiUser, useRouterStore, useUIStore, useUserStore } from 'hooks';
 import { useState } from 'react';
-import { CodeLanguage, ContentResponse, DataViewerHeadersType, MermaidResponseDTO, QueryParamKey, Status } from 'types';
+import { CodeLanguage, ContentResponse, DataViewerHeadersType, MarkdownResponseDTO, QueryParamKey, Status } from 'types';
 
-const MARKDOWN_COLUMNS: DataViewerHeadersType<MermaidResponseDTO>[] = [
+const MARKDOWN_COLUMNS: DataViewerHeadersType<MarkdownResponseDTO>[] = [
   {
     index: 'name',
     head: 'name',
@@ -141,7 +141,7 @@ export default function Page() {
             <>
               <T className="tt-se cr-g5 tx-s">signed in as</T>
               <UserChip imageUrl={imageUrl} nickname={nickname} companyKey={company.key} />
-              <ButtonLoader size="tiny" onClick={(setLoader) => logout({ setLoader })} type="light" icon={<LogoutIcon />}>
+              <ButtonLoader size="tiny" onClick={(setLoader) => logout({ setLoader })} type="tertiary" icon={<LogoutIcon />}>
                 <T className="ws-np tt-se">sign out</T>
               </ButtonLoader>
             </>
@@ -173,7 +173,7 @@ export default function Page() {
                     expand
                     onClick={async (setLoaderStatus) => {
                       setLoaderStatus(Status.LOADING);
-                      const { url, ...options } = jukiApiManager.API_V2.mermaid.create({
+                      const { url, ...options } = jukiApiManager.API_V2.markdown.create({
                         body: {
                           name,
                           members: EMPTY_ENTITY_MEMBERS_DTO(),
@@ -227,11 +227,11 @@ export default function Page() {
             <T>your documents</T>
           </div>
           <div style={{ height: `calc(var(--100VH) / 2)`, minHeight: '200px' }}>
-            <PagedDataViewer<MermaidResponseDTO>
+            <PagedDataViewer<MarkdownResponseDTO>
               name="markdown-list"
               headers={MARKDOWN_COLUMNS}
               getUrl={({ pagination: { page, pageSize }, filter, sort }) =>
-                jukiApiManager.API_V2.mermaid.getSummaryList({
+                jukiApiManager.API_V2.markdown.getSummaryList({
                   params: { page, pageSize, filterUrl: toFilterUrl(filter), sortUrl: toSortUrl(sort) },
                 }).url
               }

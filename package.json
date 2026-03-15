@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "git:push": "git push origin main && git push origin --tags",
-    "pull": "pnpm remove @juki-team/commons @juki-team/base-ui && dotenv -- pnpm add @juki-team/commons@latest @juki-team/base-ui@latest",
+    "pull": "dotenv -- pnpm add @juki-team/commons@latest @juki-team/base-ui@latest",
     "push": "pnpm version patch && pnpm git:push;"
   },
   "engines": {
@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@ably/spaces": "^0.5.2",
-    "@juki-team/base-ui": "^1.4.53",
-    "@juki-team/commons": "^0.1.2",
+    "@juki-team/base-ui": "^1.4.59",
+    "@juki-team/commons": "^0.1.4",
     "@vercel/analytics": "^2.0.1",
     "ably": "^2.20.0",
     "ai": "^6.0.116",
