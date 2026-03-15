@@ -12,11 +12,11 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@juki-team/base-ui':
-        specifier: ^1.4.70
-        version: 1.4.70(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
+        specifier: ^1.4.71
+        version: 1.4.71(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)
       '@juki-team/commons':
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: ^0.1.6
+        version: 0.1.6
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.51.0))(react@19.2.4)(vue@3.5.30(typescript@5.9.3))
@@ -604,8 +604,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@juki-team/base-ui@1.4.70':
-    resolution: {integrity: sha512-4x1d1KnBocgPYsq4cd7vvhWtFxqrRA8RZeUFQm4C948vUobtu9fId5jawqfMh/IrxXrZkU8Oq5K4yKUoYbL36A==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.70/9f54f13e7b30ad5dd94b0d092f42b3351b0c23d2}
+  '@juki-team/base-ui@1.4.71':
+    resolution: {integrity: sha512-EtUkSobYBVJYdxCY6x4WzWCisk6thG/ZjuzHaWpCJeeEVrabZPZAdM2/np/R1f+qcs+ND4PBViLpnoV4dxTrQA==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.71/38ea2410e2b31b9a04aa5dd84b4d3a1b8968d744}
     engines: {node: '>=24'}
     peerDependencies:
       '@ably/spaces': ^0.5.2
@@ -616,8 +616,8 @@ packages:
       react-dom: ^19
       swr: ^2
 
-  '@juki-team/commons@0.1.5':
-    resolution: {integrity: sha512-hLCjEIi1OPOnk15vbxau5psxgY37mWJao59klBhjU+uilI+lPvUneJCwg82xHd8WQAvZ90cDNCybXuIy8xffWg==, tarball: https://npm.pkg.github.com/download/@juki-team/commons/0.1.5/7528f826565a1c763cdb61a2200cb29d66e2493b}
+  '@juki-team/commons@0.1.6':
+    resolution: {integrity: sha512-fepeeqLEpOUSvehUW7GFHvccsl4oQxXA+TRmsFkdURbVDATO1b3paPjrThvxHNrvH6C4KaU0f7GXzxpHqcCIBg==, tarball: https://npm.pkg.github.com/download/@juki-team/commons/0.1.6/44fc2c380d3182045279c4cc44a25a1bd1fe8de8}
 
   '@lezer/common@1.5.1':
     resolution: {integrity: sha512-6YRVG9vBkaY7p1IVxL4s44n5nUnaNnGM2/AckNgYOnxTG2kWh1vR8BMxPseWPjRNpb5VtXnMpeYAEAADoRV1Iw==}
@@ -4987,7 +4987,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@juki-team/base-ui@1.4.70(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
+  '@juki-team/base-ui@1.4.71(@ably/spaces@0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@excalidraw/excalidraw@0.18.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.14)(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(immer@11.1.4)(motion@12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(react-dom@19.2.4(react@19.2.4))(react-is@16.13.1)(react@19.2.4)(redux@5.0.1)(swr@2.4.1(react@19.2.4))(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.4))(zod@4.3.6)':
     dependencies:
       '@ably/spaces': 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@ai-sdk/react': 3.0.118(react@19.2.4)(zod@4.3.6)
@@ -5015,7 +5015,7 @@ snapshots:
       '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@handsontable/react-wrapper': 16.2.0(handsontable@16.2.0)
       '@hookform/resolvers': 5.2.2(react-hook-form@7.71.2(react@19.2.4))
-      '@juki-team/commons': 0.1.5
+      '@juki-team/commons': 0.1.6
       '@milkdown/components': 7.19.0(@codemirror/language@6.12.2)(@codemirror/state@6.6.0)(@codemirror/view@6.40.0)(typescript@5.9.3)
       '@milkdown/core': 7.19.0
       '@milkdown/crepe': 7.19.0(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.6)(typescript@5.9.3)
@@ -5078,7 +5078,7 @@ snapshots:
       - use-sync-external-store
       - zod
 
-  '@juki-team/commons@0.1.5': {}
+  '@juki-team/commons@0.1.6': {}
 
   '@lezer/common@1.5.1': {}
 
