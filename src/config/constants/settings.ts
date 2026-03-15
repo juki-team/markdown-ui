@@ -1,0 +1,2 @@
+export const JUKI_SERVICE_V2_URL = process.env.NEXT_PUBLIC_JUKI_SERVICE_V2_URL || '';
+export const NODE_ENV = process.env.NODE_ENV || 'development';

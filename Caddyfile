@@ -1,0 +1,4 @@
+md.local.juki.app:443 {
+    tls internal
+    reverse_proxy localhost:3077
+}
