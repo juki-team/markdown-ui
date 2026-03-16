@@ -196,7 +196,7 @@ export async function POST(req: Request) {
     source,
     selectedSource,
     fileType = CodeLanguage.MARKDOWN,
-    model = 'anthropic/claude-sonnet-4.5',
+    // model = 'anthropic/claude-sonnet-4.5',
   }: {
     messages: UIMessage[];
     source: string;
@@ -208,7 +208,7 @@ export async function POST(req: Request) {
   const system = fileType === CodeLanguage.MDX ? MDX_SYSTEM(source, selectedSource) : MD_SYSTEM(source, selectedSource);
 
   const result = streamText({
-    model,
+    model: 'google/gemini-2.5-flash-lite',
     system,
     messages: await convertToModelMessages(messages).catch(() => []),
     tools: {
