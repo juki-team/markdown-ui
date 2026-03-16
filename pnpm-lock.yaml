@@ -12,8 +12,8 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@juki-team/base-ui':
-        specifier: ^1.4.81
-        version: 1.4.81(9b4d33a8b9c1d1a288c6558579445d1c)
+        specifier: ^1.4.83
+        version: 1.4.83(9b4d33a8b9c1d1a288c6558579445d1c)
       '@juki-team/commons':
         specifier: ^0.1.10
         version: 0.1.10
@@ -618,8 +618,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@juki-team/base-ui@1.4.81':
-    resolution: {integrity: sha512-k6/8FOZ+ZCUuThzFOHxROfFRvDOTaFJErMdTF7VCAIU+S3TkAun8DUQXIq1J23SvszfHPnzTGgR5cjNC3QLzcQ==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.81/afd106e78e4ad4a3e591d8c598e0bdd426f9a62b}
+  '@juki-team/base-ui@1.4.83':
+    resolution: {integrity: sha512-c6P2fpofGUaE1BG8P+AjmexD6vv22v39kB3qqCytMWAmnyipClWZJFLn6hqe3ssprqivrfKgj8Qvg1TV8hCenA==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.83/28160225ba3f6ee9e0d99915623b0fe5d8c58249}
     engines: {node: '>=24'}
     peerDependencies:
       '@ably/spaces': ^0.5.2
@@ -5681,7 +5681,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@juki-team/base-ui@1.4.81(9b4d33a8b9c1d1a288c6558579445d1c)':
+  '@juki-team/base-ui@1.4.83(9b4d33a8b9c1d1a288c6558579445d1c)':
     dependencies:
       '@ably/spaces': 0.5.2(ably@2.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@ai-sdk/react': 3.0.118(react@19.2.4)(zod@4.3.6)
