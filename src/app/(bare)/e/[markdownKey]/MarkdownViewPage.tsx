@@ -119,17 +119,20 @@ const toEntityMembersDTO = (members: EntityMembersResponseDTO) => {
   };
 };
 
-const orderFiles = (files: CodeEditorFiles<CodeLanguage.MARKDOWN>) => {
-  const filesArray: CodeEditorFiles<CodeLanguage.MARKDOWN> = {};
+type CodeLanguages = CodeLanguage.MARKDOWN | CodeLanguage.MDX;
+
+const orderFiles = (files: CodeEditorFiles<CodeLanguages>) => {
+  const filesArray: CodeEditorFiles<CodeLanguages> = {};
   for (const [key, file] of Object.entries(files)) {
     filesArray[key] = {
-      source: file.source,
+      source: file.source || '',
       language: file.language,
       index: file.index,
-      name: file.name,
-      hidden: file.hidden,
-      readonly: file.readonly,
-      protected: file.protected,
+      name: file.name || '',
+      hidden: file.hidden ?? false,
+      readonly: file.readonly ?? false,
+      protected: file.protected ?? false,
+      folderPath: file.folderPath || '',
     };
   }
   return filesArray;
@@ -145,7 +148,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
     fallbackData: JSON.stringify(contentResponse('fallback data', fallbackData)),
   });
   const markdown = data?.success ? data.content : fallbackData;
-  const [files, setFiles] = useState(markdown.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>);
+  const [files, setFiles] = useState(markdown.files as unknown as CodeEditorFiles<CodeLanguages>);
   const [name, setName] = useState(markdown.name);
 
   const newBodyString = JSON.stringify({
@@ -156,7 +159,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
   });
   const currentBodyString = JSON.stringify({
     name: markdown.name,
-    files: orderFiles(markdown.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>),
+    files: orderFiles(markdown.files as unknown as CodeEditorFiles<CodeLanguages>),
     tags: [],
     members: toEntityMembersDTO(markdown.members),
   });
@@ -191,28 +194,34 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
   const [currentFileName, setCurrentFileName] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
   const [editorWidth, setEditorWidth] = useState<string>('');
-  const userCodeEditorRef = useRef<UserCodeEditorHandle | null>(null);
+  const userCodeEditorRef = useRef<UserCodeEditorHandle<CodeLanguages> | null>(null);
   const filesRef = useStableRef(files);
+  const currentFileNameRef = useStableRef(currentFileName);
 
   const setCode = useCallback(
     (source: string) => {
-      if (filesRef.current[currentFileName]?.source !== source) {
-        userCodeEditorRef.current?.setFile(currentFileName, {
-          ...filesRef.current[currentFileName],
+      if (filesRef.current[currentFileNameRef.current]?.source !== source) {
+        userCodeEditorRef.current?.setFile({
+          ...filesRef.current[currentFileNameRef.current],
           source,
         });
       }
     },
-    [currentFileName, filesRef],
+    [currentFileNameRef, filesRef],
   );
 
-  const { source, language } = files?.[currentFileName] || { source: '', language: CodeLanguage.TEXT };
   const getBodyRef = useRef(() => {
-    const selectedSource = userCodeEditorRef.current?.markdownGetSelection() ?? '';
-    if (selectedSource) {
-      userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+    const { language, source } = filesRef.current[currentFileNameRef.current] || { source: '', language: CodeLanguage.MARKDOWN };
+    if (language === CodeLanguage.MARKDOWN) {
+      const selectedSource = userCodeEditorRef.current?.markdownGetSelection() ?? '';
+      if (selectedSource) {
+        userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+      }
+      return { source, selectedSource, fileType: CodeLanguage.MARKDOWN };
+    } else if (language === CodeLanguage.MDX) {
+      return { source, fileType: CodeLanguage.MDX };
     }
-    return { source: language === CodeLanguage.MARKDOWN ? source : '', selectedSource };
+    return {};
   });
 
   const appliedPartsRef = useRef<Set<string>>(new Set());
@@ -229,8 +238,17 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
           const key = `${message.id}-${i}`;
           if (!appliedPartsRef.current.has(key) && typeof part?.output?.data?.content === 'string') {
             appliedPartsRef.current.add(key);
-            userCodeEditorRef.current?.markdownReplaceSelectionWithMarkdown(part.output?.data?.content);
-            userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+            const content = part.output?.data?.content || '';
+            const file = filesRef.current[currentFileNameRef.current];
+            if (file?.language === CodeLanguage.MARKDOWN) {
+              userCodeEditorRef.current?.markdownReplaceSelectionWithMarkdown(content);
+              userCodeEditorRef.current?.markdownHighlightSelectionNodes('jk-md-math-node-highlighted');
+            } else if (file?.language === CodeLanguage.MDX) {
+              userCodeEditorRef.current?.setFile({
+                ...file,
+                source: content,
+              });
+            }
           }
         }
       });
@@ -281,7 +299,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                 </div>
               }
             >
-              <UserCodeEditor<CodeLanguage.MARKDOWN>
+              <UserCodeEditor<CodeLanguages>
                 ref={userCodeEditorRef}
                 initialFiles={
                   fallbackData.files && Object.keys(fallbackData.files).length > 0
@@ -295,11 +313,15 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                           hidden: false,
                           readonly: false,
                           protected: false,
+                          folderPath: '',
                         },
                       }
                 }
                 storeKey={storeKey}
-                languages={[{ value: CodeLanguage.MARKDOWN, label: 'Markdown' }]}
+                languages={[
+                  { value: CodeLanguage.MARKDOWN, label: 'Markdown' },
+                  { value: CodeLanguage.MDX, label: 'MDX' },
+                ]}
                 onCurrentFileNameChange={setCurrentFileName}
                 onFilesChange={setFiles}
                 withoutRunCodeButton
@@ -309,7 +331,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
           <AiChatPanel
             getBodyRef={getBodyRef}
             onMessagesChangeRef={onMessagesChangeRef}
-            api="/api/chat/md-math"
+            api="/api/chat/md"
             storeKey={storeKey}
             onWidthChange={(width) => setEditorWidth(`calc(100% - ${width}px)`)}
             actions={({ setPendingParts }) => {
