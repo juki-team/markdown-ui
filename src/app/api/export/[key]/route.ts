@@ -137,10 +137,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
       const folderCards = nextStepCardsByFolder.get(folder) ?? [];
       if (isIndexFile(filename) && folderCards.length > 0) {
         content += buildNextSteps(folderCards);
-        finalFilename = filename.replace(/\.md$/, '.mdx');
+        finalFilename = stripNumberPrefix(filename.replace(/\.md$/, '.mdx'));
       }
 
-      const path = folder ? `content/docs/${folder}/${finalFilename}` : `content/docs/${finalFilename}`;
+      const finalFolder = stripNumberPrefix(folder);
+      const path = finalFolder ? `content/docs/${finalFolder}/${finalFilename}` : `content/docs/${finalFilename}`;
       zipEntries[path] = strToU8(content);
     }
 
