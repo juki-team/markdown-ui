@@ -130,12 +130,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
   const zipEntries: Record<string, Uint8Array> = {};
 
   for (const [folder, folderFiles] of folderMap.entries()) {
-    const sorted = [...folderFiles].sort((a, b) => a.index - b.index);
-
-    for (const { filename, source, description } of sorted) {
+    for (const { filename, source, description } of folderFiles) {
       let content = addFrontmatter(source.replace(/```mermaid\/\w+/g, '```mermaid'), filename, description);
 
-      let finalFilename = filename;
+      let finalFilename = stripNumberPrefix(filename);
       const folderCards = nextStepCardsByFolder.get(folder) ?? [];
       if (isIndexFile(filename) && folderCards.length > 0) {
         content += buildNextSteps(folderCards);
@@ -146,10 +144,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
       zipEntries[path] = strToU8(content);
     }
 
-    const fileEntries = sorted.filter(({ filename }) => !isIndexFile(filename)).map(({ filename }) => ({ slug: removeExtension(filename), sortKey: filename }));
-    const folderEntries = folder ? [] : [...folderMap.keys()].filter((f) => f !== '').map((f) => ({ slug: f, sortKey: stripNumberPrefix(f) }));
+    const fileEntries = folderFiles
+      .filter(({ filename }) => !isIndexFile(filename))
+      .map(({ filename }) => ({ slug: stripNumberPrefix(removeExtension(filename)), sortKey: filename }));
+    const folderEntries = folder ? [] : [...folderMap.keys()].filter((f) => f !== '').map((f) => ({ slug: stripNumberPrefix(f), sortKey: f }));
     const pages = [...fileEntries, ...folderEntries].sort((a, b) => a.sortKey.localeCompare(b.sortKey)).map(({ slug }) => slug);
-    const metaTitle = folder ? toTitleCase(folder) : toTitleCase(docName);
+    const metaTitle = stripNumberPrefix(folder ? toTitleCase(folder) : toTitleCase(docName));
     const meta = { title: metaTitle, pages };
     const metaPath = folder ? `content/docs/${folder}/meta.json` : `content/docs/meta.json`;
     zipEntries[metaPath] = strToU8(JSON.stringify(meta, null, 2));
