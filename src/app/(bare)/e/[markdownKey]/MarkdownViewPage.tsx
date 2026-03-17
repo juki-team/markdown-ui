@@ -398,6 +398,17 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
           }}
           tooltipContent="download as zip"
         />
+        <Button
+          size="small"
+          type="ghost"
+          icon={<DownloadIcon size="small" />}
+          onClick={() => {
+            const a = document.createElement('a');
+            a.href = `/api/export-raw/${fallbackData.key}`;
+            a.click();
+          }}
+          tooltipContent="download raw files"
+        />
         <Link href={`/${fallbackData.key}`}>
           <Button size="small" type="ghost">
             <T className="tt-se">view document</T>

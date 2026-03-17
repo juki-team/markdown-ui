@@ -130,6 +130,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
   const zipEntries: Record<string, Uint8Array> = {};
 
   for (const [folder, folderFiles] of folderMap.entries()) {
+    const finalFolder = stripNumberPrefix(folder);
     for (const { filename, source, description } of folderFiles) {
       let content = addFrontmatter(source.replace(/```mermaid\/\w+/g, '```mermaid'), filename, description);
 
@@ -140,7 +141,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
         finalFilename = stripNumberPrefix(filename.replace(/\.md$/, '.mdx'));
       }
 
-      const finalFolder = stripNumberPrefix(folder);
       const path = finalFolder ? `content/docs/${finalFolder}/${finalFilename}` : `content/docs/${finalFilename}`;
       zipEntries[path] = strToU8(content);
     }
@@ -150,9 +150,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
       .map(({ filename }) => ({ slug: stripNumberPrefix(removeExtension(filename)), sortKey: filename }));
     const folderEntries = folder ? [] : [...folderMap.keys()].filter((f) => f !== '').map((f) => ({ slug: stripNumberPrefix(f), sortKey: f }));
     const pages = [...fileEntries, ...folderEntries].sort((a, b) => a.sortKey.localeCompare(b.sortKey)).map(({ slug }) => slug);
-    const metaTitle = stripNumberPrefix(folder ? toTitleCase(folder) : toTitleCase(docName));
+    const metaTitle = stripNumberPrefix(finalFolder ? toTitleCase(finalFolder) : toTitleCase(docName));
     const meta = { title: metaTitle, pages };
-    const metaPath = folder ? `content/docs/${folder}/meta.json` : `content/docs/meta.json`;
+    const metaPath = finalFolder ? `content/docs/${finalFolder}/meta.json` : `content/docs/meta.json`;
     zipEntries[metaPath] = strToU8(JSON.stringify(meta, null, 2));
   }
 
