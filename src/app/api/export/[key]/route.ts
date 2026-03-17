@@ -17,11 +17,17 @@ function toTitleCase(str: string) {
   return str.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+// Remove characters that conflict with URLs, keeping only safe ones
+function sanitizeSlug(s: string) {
+  return s.replace(/[&?#%=+@!$^*()[\]{}<>|\\'"`,;]/g, '').replace(/-{2,}/g, '-');
+}
+
+function normalizeSegment(s: string) {
+  return sanitizeSlug(s.toLowerCase().replace(/\s+/g, '-'));
+}
+
 function normalizeFilename(filename: string) {
-  return filename
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/^\d+-index\./, 'index.');
+  return normalizeSegment(filename).replace(/^\d+-index\./, 'index.');
 }
 
 function removeExtension(filename: string) {
@@ -31,14 +37,6 @@ function removeExtension(filename: string) {
 
 function stripNumberPrefix(str: string) {
   return str.replace(/^\d+[-\s]+/, '');
-}
-
-// Strips numeric prefix from every segment of a path
-function stripNumberPrefixFromPath(path: string): string {
-  return path
-    .split('/')
-    .map(stripNumberPrefix)
-    .join('/');
 }
 
 function isIndexFile(filename: string) {
@@ -51,8 +49,7 @@ function extractTitle(source: string, filename: string): string {
   const firstContentIdx = lines.findIndex((l) => l.trim() !== '');
   const firstLine = lines[firstContentIdx]?.trim() ?? '';
   if (firstLine.startsWith('# ')) return firstLine.slice(2).trim();
-  const base = removeExtension(normalizeFilename(filename));
-  return toTitleCase(stripNumberPrefix(base));
+  return toTitleCase(stripNumberPrefix(removeExtension(normalizeFilename(filename))));
 }
 
 function addFrontmatter(source: string, filename: string, description: string): string {
@@ -60,8 +57,6 @@ function addFrontmatter(source: string, filename: string, description: string): 
   if (ext !== 'md' && ext !== 'mdx') return source;
 
   const lines = source.split('\n');
-
-  // Already has frontmatter
   if (lines[0]?.trim() === '---') return source;
 
   let title = '';
@@ -74,11 +69,12 @@ function addFrontmatter(source: string, filename: string, description: string): 
     title = firstLine.slice(2).trim();
     bodyLines = lines.slice(firstContentIdx + 1);
   } else {
-    const base = removeExtension(normalizeFilename(filename));
-    title = toTitleCase(stripNumberPrefix(base));
+    title = toTitleCase(stripNumberPrefix(removeExtension(normalizeFilename(filename))));
   }
 
-  const frontmatter = ['---', `title: "${title}"`, description ? `description: ${description}` : '', '---'].filter(Boolean).join('\n');
+  const frontmatter = ['---', `title: "${title}"`, description ? `description: ${description}` : '', '---']
+    .filter(Boolean)
+    .join('\n');
 
   return `${frontmatter}\n\n${bodyLines.join('\n').trimStart()}`;
 }
@@ -94,14 +90,81 @@ function buildNextSteps(cards: { title: string; href: string; description: strin
   return `\n\n---\n\n## Next Steps\n\n<Cards>\n${cardLines}\n</Cards>`;
 }
 
-// Returns the direct subfolders of `folder` from all known folder keys
-function getDirectSubfolders(folder: string, allFolders: string[]): string[] {
-  return allFolders.filter((f) => {
-    if (folder === '') {
-      return f !== '' && !f.includes('/');
+type FileEntry = { rawName: string; source: string; description: string };
+type FolderNode = { files: FileEntry[]; subfolders: Map<string, FolderNode> };
+
+function buildTree(files: ReturnType<typeof Object.values<MarkdownResponseDTO['files'][string]>>): FolderNode {
+  const root: FolderNode = { files: [], subfolders: new Map() };
+
+  for (const file of files) {
+    const segments = (file.folderPath || '').split('/').filter(Boolean);
+    let node = root;
+    for (const segment of segments) {
+      if (!node.subfolders.has(segment)) {
+        node.subfolders.set(segment, { files: [], subfolders: new Map() });
+      }
+      node = node.subfolders.get(segment)!;
     }
-    return f.startsWith(folder + '/') && !f.slice(folder.length + 1).includes('/');
-  });
+    node.files.push({ rawName: file.name, source: file.source, description: file.description || '' });
+  }
+
+  return root;
+}
+
+function processFolder(
+  node: FolderNode,
+  docPath: string,
+  folderTitle: string,
+  zipEntries: Record<string, Uint8Array>,
+) {
+  // Build next-step cards from direct files (non-index)
+  const nextStepCards: { title: string; href: string; description: string }[] = [];
+  for (const { rawName, source, description } of node.files) {
+    const filename = normalizeFilename(rawName);
+    if (isIndexFile(filename)) continue;
+    const hrefPath = docPath.replace(/^content/, '');
+    nextStepCards.push({
+      title: extractTitle(source, filename),
+      href: `${hrefPath}/${removeExtension(stripNumberPrefix(filename))}`,
+      description,
+    });
+  }
+
+  // Write files
+  for (const { rawName, source, description } of node.files) {
+    const filename = normalizeFilename(rawName);
+    let finalFilename = stripNumberPrefix(filename);
+    let content = addFrontmatter(source.replace(/```mermaid\/\w+/g, '```mermaid'), filename, description);
+
+    if (isIndexFile(filename) && nextStepCards.length > 0) {
+      content += buildNextSteps(nextStepCards);
+      finalFilename = finalFilename.replace(/\.md$/, '.mdx');
+    }
+
+    zipEntries[`${docPath}/${finalFilename}`] = strToU8(content);
+  }
+
+  // Build pages list: direct files (non-index) + direct subfolders, sorted by raw name
+  const filePages = node.files
+    .filter(({ rawName }) => !isIndexFile(normalizeFilename(rawName)))
+    .map(({ rawName }) => {
+      const filename = normalizeFilename(rawName);
+      return { slug: stripNumberPrefix(removeExtension(filename)), sortKey: filename };
+    });
+
+  const subfolderPages: { slug: string; sortKey: string }[] = [];
+  for (const [rawSegment, childNode] of node.subfolders.entries()) {
+    const normalizedSegment = normalizeSegment(rawSegment);
+    const strippedSegment = stripNumberPrefix(normalizedSegment);
+    subfolderPages.push({ slug: strippedSegment, sortKey: normalizedSegment });
+    processFolder(childNode, `${docPath}/${strippedSegment}`, toTitleCase(strippedSegment), zipEntries);
+  }
+
+  const pages = [...filePages, ...subfolderPages]
+    .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
+    .map(({ slug }) => slug);
+
+  zipEntries[`${docPath}/meta.json`] = strToU8(JSON.stringify({ title: folderTitle, pages }, null, 2));
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ key: string }> }) {
@@ -115,86 +178,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
 
   const { files, name: docName } = result.content;
 
-  type FileEntry = { filename: string; source: string; index: number; description: string; folder: string };
-
-  // Collect and normalize all file entries (folder keeps numeric prefixes for sorting)
-  const allFiles: FileEntry[] = Object.values(files).map((file) => ({
-    filename: normalizeFilename(file.name),
-    source: file.source,
-    index: file.index,
-    description: file.description || '',
-    folder: normalizeFilename(file.folderPath || ''),
-  }));
-
-  // Group by folder
-  const folderMap = new Map<string, FileEntry[]>();
-  for (const entry of allFiles) {
-    if (!folderMap.has(entry.folder)) folderMap.set(entry.folder, []);
-    folderMap.get(entry.folder)!.push(entry);
-  }
-
-  const allFolderKeys = [...folderMap.keys()];
-
-  // Build card metadata per folder for Next Steps (files only, direct children)
-  const nextStepCardsByFolder = new Map<string, { title: string; href: string; description: string }[]>();
-  for (const { filename, source, description, folder } of allFiles) {
-    if (isIndexFile(filename)) continue;
-    if (!nextStepCardsByFolder.has(folder)) nextStepCardsByFolder.set(folder, []);
-    const finalFolder = stripNumberPrefixFromPath(folder);
-    const finalFilename = stripNumberPrefix(filename);
-    nextStepCardsByFolder.get(folder)!.push({
-      title: extractTitle(source, filename),
-      href: finalFolder ? `/docs/${finalFolder}/${removeExtension(finalFilename)}` : `/docs/${removeExtension(finalFilename)}`,
-      description,
-    });
-  }
-
+  const root = buildTree(Object.values(files));
   const zipEntries: Record<string, Uint8Array> = {};
 
-  for (const [folder, folderFiles] of folderMap.entries()) {
-    const finalFolder = stripNumberPrefixFromPath(folder);
-
-    // Write files
-    for (const { filename, source, description } of folderFiles) {
-      let content = addFrontmatter(source.replace(/```mermaid\/\w+/g, '```mermaid'), filename, description);
-
-      let finalFilename = stripNumberPrefix(filename);
-      const folderCards = nextStepCardsByFolder.get(folder) ?? [];
-      if (isIndexFile(filename) && folderCards.length > 0) {
-        content += buildNextSteps(folderCards);
-        finalFilename = stripNumberPrefix(filename.replace(/\.md$/, '.mdx'));
-      }
-
-      const path = finalFolder ? `content/docs/${finalFolder}/${finalFilename}` : `content/docs/${finalFilename}`;
-      zipEntries[path] = strToU8(content);
-    }
-
-    // Direct files (non-index) for pages list
-    const fileEntries = folderFiles
-      .filter(({ filename }) => !isIndexFile(filename))
-      .map(({ filename }) => ({ slug: stripNumberPrefix(removeExtension(filename)), sortKey: filename }));
-
-    // Direct subfolders for pages list (only last path segment, stripped)
-    const directSubfolders = getDirectSubfolders(folder, allFolderKeys);
-    const subfolderEntries = directSubfolders.map((f) => {
-      const lastSegment = f.slice(f.lastIndexOf('/') + 1); // works for both root and nested
-      return { slug: stripNumberPrefix(lastSegment), sortKey: lastSegment };
-    });
-
-    const pages = [...fileEntries, ...subfolderEntries]
-      .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
-      .map(({ slug }) => slug);
-
-    // Title: last segment of the folder name (or docName for root)
-    const lastFolderSegment = folder ? folder.slice(folder.lastIndexOf('/') + 1) : '';
-    const metaTitle = lastFolderSegment
-      ? toTitleCase(stripNumberPrefix(lastFolderSegment))
-      : toTitleCase(docName);
-
-    const meta = { title: metaTitle, pages };
-    const metaPath = finalFolder ? `content/docs/${finalFolder}/meta.json` : `content/docs/meta.json`;
-    zipEntries[metaPath] = strToU8(JSON.stringify(meta, null, 2));
-  }
+  processFolder(root, 'content/docs', toTitleCase(docName), zipEntries);
 
   const zip = zipSync(zipEntries);
   const slug = docName.toLowerCase().replace(/\s+/g, '-') || key;
