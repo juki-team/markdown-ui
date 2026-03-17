@@ -151,7 +151,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ key: st
     const folderEntries = folder ? [] : [...folderMap.keys()].filter((f) => f !== '').map((f) => ({ slug: stripNumberPrefix(f), sortKey: f }));
     const pages = [...fileEntries, ...folderEntries].sort((a, b) => a.sortKey.localeCompare(b.sortKey)).map(({ slug }) => slug);
     const metaTitle = stripNumberPrefix(finalFolder ? toTitleCase(finalFolder) : toTitleCase(docName));
-    const meta = { title: metaTitle, pages };
+    const meta = { title: `"${metaTitle}"`, pages };
     const metaPath = finalFolder ? `content/docs/${finalFolder}/meta.json` : `content/docs/meta.json`;
     zipEntries[metaPath] = strToU8(JSON.stringify(meta, null, 2));
   }
