@@ -83,7 +83,7 @@ function buildNextSteps(cards: { title: string; href: string; description: strin
     })
     .join('\n');
 
-  return `\n\n## Next Steps\n\n<Cards>\n${cardLines}\n</Cards>`;
+  return `\n\n---\n\n## Next Steps\n\n<Cards>\n${cardLines}\n</Cards>`;
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ key: string }> }) {
