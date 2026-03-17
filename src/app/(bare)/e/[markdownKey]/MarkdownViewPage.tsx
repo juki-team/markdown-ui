@@ -8,6 +8,7 @@ import {
   Button,
   DateLiteral,
   DocumentMembersButton,
+  DownloadIcon,
   ExpandMoreIcon,
   InfoIIcon,
   LoadingIcon,
@@ -133,6 +134,7 @@ const orderFiles = (files: CodeEditorFiles<CodeLanguages>) => {
       readonly: file.readonly ?? false,
       protected: file.protected ?? false,
       folderPath: file.folderPath || '',
+      description: file.description || '',
     };
   }
   return filesArray;
@@ -314,6 +316,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                           readonly: false,
                           protected: false,
                           folderPath: '',
+                          description: '',
                         },
                       }
                 }
@@ -384,6 +387,17 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
           onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
         />
         <div className="flex-1" />
+        <Button
+          size="small"
+          type="ghost"
+          icon={<DownloadIcon size="small" />}
+          onClick={() => {
+            const a = document.createElement('a');
+            a.href = `/api/export/${fallbackData.key}`;
+            a.click();
+          }}
+          tooltipContent="download as zip"
+        />
         <Link href={`/${fallbackData.key}`}>
           <Button size="small" type="ghost">
             <T className="tt-se">view document</T>
