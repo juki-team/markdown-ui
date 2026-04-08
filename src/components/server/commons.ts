@@ -26,4 +26,7 @@ export {
   SpinIcon,
   SendIcon,
   DoneAllIcon,
+  AddIcon,
+  EditIcon,
+  SaveIcon,
 } from '@juki-team/base-ui/server-components';

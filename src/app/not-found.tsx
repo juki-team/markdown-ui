@@ -16,7 +16,7 @@ export default function NotFound() {
   return (
     <PageNotFound style={{ height: 'var(--100VH) !important' }}>
       <h1><T className="tt-se">page not found</T></h1>
-      <div className="jk-row" style={{ alignItems: 'baseline' }}>
+      <div className="jk-row ai-be">
         <T className="tt-se tx-l">redirecting to home</T>&nbsp;
         <div className="dot-flashing" />
       </div>

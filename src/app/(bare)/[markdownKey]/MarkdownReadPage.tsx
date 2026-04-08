@@ -1,13 +1,11 @@
 'use client';
 
-import { Button, Select, T, usePageStore } from '@juki-team/base-ui';
-import { EditIcon } from '@juki-team/base-ui/server-components';
-import { DocumentMembersButton, MdMathViewer } from 'components';
+import { Button, DocumentMembersButton, EditIcon, LoginUser, MdMathViewer, Select, T, TwoContentLayout } from 'components';
 import { JUKI_SERVICE_V2_URL } from 'config/constants';
-import { classNames, getUserKey } from 'helpers';
-import { useUIStore, useUserStore } from 'hooks';
+import { classNames, extractTitle, filesToFileTree, filesToNavMap, FileTree, getUserKey, oneTab, removeExtension, toTitleCase } from 'helpers';
+import { usePageStore, useUIStore, useUserStore } from 'hooks';
 import { useEffect, useRef, useState } from 'react';
-import { CodeEditorFiles, CodeLanguage, MarkdownResponseDTO } from 'types';
+import { MarkdownResponseDTO } from 'types';
 
 function CopyIcon() {
   return (
@@ -111,9 +109,9 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
     fontSize: '13px',
     fontWeight: 500,
     cursor: 'pointer',
-    border: '1px solid var(--t-color-gray-4, #d1d5db)',
-    background: 'var(--t-color-bg, #fff)',
-    color: 'var(--t-color-text, #111)',
+    border: '1px solid var(--cr-ht)',
+    background: 'var(--cr-we)',
+    color: 'var(--cr-tx)',
     transition: 'background 120ms ease',
     outline: 'none',
   };
@@ -129,31 +127,31 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
     textAlign: 'left',
     border: 'none',
     background: 'transparent',
-    color: 'var(--t-color-text, #111)',
+    color: 'var(--cr-tx)',
     boxSizing: 'border-box',
   };
 
   return (
-    <div ref={menuRef} style={{ position: 'relative', display: 'inline-flex' }}>
-      <div style={{ display: 'flex' }}>
+    <div ref={menuRef} className="pn-re dy-if">
+      <div className="jk-row">
         <button
           style={{ ...btnBase, borderRadius: '6px 0 0 6px', borderRight: 'none', gap: '6px' }}
           onClick={() => copy(source)}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-gray-1, #f5f5f5)')}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-bg, #fff)')}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-ht-lt)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-we)')}
         >
           {copied ? <CheckIcon /> : <CopyIcon />}
           <span>{copied ? 'Copied!' : 'Copy'}</span>
         </button>
 
         {/* divider line */}
-        <div style={{ width: '1px', background: 'var(--t-color-gray-4, #d1d5db)', alignSelf: 'stretch' }} />
+        <div style={{ width: '1px', background: 'var(--cr-ht)', alignSelf: 'stretch' }} />
 
         <button
           style={{ ...btnBase, borderRadius: '0 6px 6px 0', borderLeft: 'none', padding: '0 8px' }}
           onClick={() => setOpen((v) => !v)}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-gray-1, #f5f5f5)')}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-bg, #fff)')}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-ht-lt)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-we)')}
           aria-haspopup="true"
           aria-expanded={open}
         >
@@ -169,12 +167,12 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
             top: 'calc(100% + 6px)',
             right: 0,
             width: '280px',
-            background: 'var(--t-color-bg, #fff)',
-            border: '1px solid var(--t-color-gray-3, #e5e7eb)',
+            background: 'var(--cr-we)',
+            border: '1px solid var(--cr-ht-lt)',
             borderRadius: '12px',
-            boxShadow: '0 8px 30px rgba(0,0,0,.12)',
+            boxShadow: '0 8px 30px var(--cr-sw)',
             padding: '8px',
-            zIndex: 50,
+            zIndex: 'var(--zi-popover)',
             display: 'flex',
             flexDirection: 'column',
             gap: '2px',
@@ -186,14 +184,14 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
               copy(source);
               setOpen(false);
             }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-gray-1, #f5f5f5)')}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-ht-lt)')}
             onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
           >
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 500 }}>
               <MarkdownIcon />
               Copy Markdown
             </span>
-            <span style={{ fontSize: '12px', color: 'var(--t-color-gray-6, #6b7280)', paddingLeft: '26px' }}>Copy raw source of {fileName}</span>
+            <span style={{ fontSize: '12px', color: 'var(--cr-tx-mt)', paddingLeft: '26px' }}>Copy raw source of {fileName}</span>
           </button>
 
           <button
@@ -208,7 +206,7 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
               URL.revokeObjectURL(url);
               setOpen(false);
             }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--t-color-gray-1, #f5f5f5)')}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--cr-ht-lt)')}
             onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
           >
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 500 }}>
@@ -218,10 +216,10 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
               </svg>
               Download .md
             </span>
-            <span style={{ fontSize: '12px', color: 'var(--t-color-gray-6, #6b7280)', paddingLeft: '26px' }}>Download {fileName} as a file</span>
+            <span style={{ fontSize: '12px', color: 'var(--cr-tx-mt)', paddingLeft: '26px' }}>Download {fileName} as a file</span>
           </button>
 
-          <div style={{ height: '1px', background: 'var(--t-color-gray-3)', margin: '4px 0' }} />
+          <div style={{ height: '1px', background: 'var(--cr-ht-lt)', margin: '4px 0' }} />
 
           {[
             {
@@ -250,14 +248,14 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               style={{ ...menuItem, textDecoration: 'none' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--t-color-gray-1, #f5f5f5)')}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--cr-ht-lt)')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = 'transparent')}
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 500 }}>
                 {icon}
                 {label}
               </span>
-              <span style={{ fontSize: '12px', color: 'var(--t-color-gray-6, #6b7280)', paddingLeft: '24px' }}>{description}</span>
+              <span style={{ fontSize: '12px', color: 'var(--cr-tx-mt)', paddingLeft: '24px' }}>{description}</span>
             </a>
           ))}
         </div>
@@ -266,111 +264,186 @@ function SplitButton({ source, fileName, rawUrl }: SplitButtonProps) {
   );
 }
 
+function getFirstFilePath(tree: FileTree, prefix = ''): string {
+  for (const [name, value] of Object.entries(tree)) {
+    if (name === 'meta.json') continue;
+    if (typeof value === 'string') {
+      const slug = removeExtension(name);
+      return prefix ? `${prefix}/${slug}` : slug;
+    }
+    const subPrefix = prefix ? `${prefix}/${name}` : name;
+    const found = getFirstFilePath(value, subPrefix);
+    if (found) return found;
+  }
+  return '';
+}
+
+function SidebarTree({
+  tree,
+  prefix,
+  navMap,
+  selectedPath,
+  onSelect,
+}: {
+  tree: FileTree;
+  prefix: string;
+  navMap: Map<string, MarkdownResponseDTO['files'][string]>;
+  selectedPath: string;
+  onSelect: (path: string) => void;
+}) {
+  return (
+    <>
+      {Object.entries(tree).map(([name, value]) => {
+        if (name === 'meta.json') {
+          return null;
+        }
+
+        if (typeof value === 'string') {
+          const slug = removeExtension(name);
+          const navPath = prefix ? `${prefix}/${slug}` : slug;
+          const file = navMap.get(navPath);
+          const label = toTitleCase(slug) ?? file?.name;
+          const isActive = selectedPath === navPath;
+          return (
+            <div className="jk-row wh-100">
+              <Button
+                key={name}
+                type="ghost"
+                size="small"
+                onClick={() => onSelect(navPath)}
+                className={classNames('left', { 'fw-br bc-ht-lt cr-tx-ht': isActive })}
+                style={{ justifyContent: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}
+              >
+                {label}
+              </Button>
+            </div>
+          );
+        }
+
+        const subPrefix = prefix ? `${prefix}/${name}` : name;
+        return (
+          <details key={name} open style={{ width: '100%' }}>
+            <summary
+              style={{
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--cr-tx-mt)',
+                padding: '6px 4px 2px',
+                listStyle: 'none',
+                userSelect: 'none',
+              }}
+            >
+              {toTitleCase(name)}
+            </summary>
+            <div style={{ paddingLeft: '8px' }}>
+              <SidebarTree tree={value} prefix={subPrefix} navMap={navMap} selectedPath={selectedPath} onSelect={onSelect} />
+            </div>
+          </details>
+        );
+      })}
+    </>
+  );
+}
+
 export function MarkdownReadPage({ markdown }: { markdown: MarkdownResponseDTO }) {
-  const files = markdown.files as unknown as CodeEditorFiles<CodeLanguage.MARKDOWN>;
-  const fileKeys = Object.keys(files).sort((a, b) => (files[a].index ?? 0) - (files[b].index ?? 0));
-  const [selected, setSelected] = useState(fileKeys[0] ?? '');
+  const { files, name: docName } = markdown;
   const { Link } = useUIStore((store) => store.components);
   const user = useUserStore((store) => store.user);
   const viewPortScreen = usePageStore((store) => store.viewPort.screen);
 
   const isMobile = viewPortScreen === 'sm';
-  const currentFile = files[selected];
-  const source = currentFile?.source ?? '';
-  const fileName = currentFile?.name ?? selected;
-  const rawUrl = typeof window !== 'undefined' ? `${window.location.origin}/${markdown.key}/raw/${encodeURIComponent(fileName)}` : '';
   const isAdministrator = getUserKey(markdown.owner.nickname, markdown.owner.company.key) === getUserKey(user.nickname, user.company.key);
 
+  const tree = filesToFileTree(Object.values(files), docName);
+  const navMap = filesToNavMap(files);
+
+  const [selectedPath, setSelectedPath] = useState(() => getFirstFilePath(tree));
+
+  const currentFile = navMap.get(selectedPath);
+  const source = currentFile?.source ?? '';
+  const fileName = currentFile?.name ?? selectedPath;
+  const rawUrl = typeof window !== 'undefined' ? `${window.location.origin}/${markdown.key}/raw/${encodeURIComponent(fileName)}` : '';
+
+  const hasMultipleFiles = navMap.size > 1;
+  const selectOptions = [...navMap.entries()].map(([path, file]) => ({ value: path, label: file.name ?? path }));
+
+  const { title, body } = extractTitle(currentFile?.source ?? '', extractTitle?.name);
+
+  console.log({ currentFile, tree, selectedPath, selectOptions, title, source });
+
   return (
-    <div className="jk-col nowrap gap stretch ht-100">
-      <div className="jk-row gap space-between bc-we jk-pg-sm-tb jk-pg-lg-rl tx-l fw-br">
-        {markdown.name}
-        {isAdministrator && (
-          <div className="jk-row gap">
-            <Link href={`/e/${markdown.key}`} className="jk-row">
-              <Button type="secondary" size="small" icon={<EditIcon />}>
-                <T>edit</T>
-              </Button>
-            </Link>
-            <DocumentMembersButton
-              key="members"
-              members={markdown.members}
-              managers={{}}
-              spectators={{}}
-              documentOwner={markdown.owner}
-              saveUrl={`${JUKI_SERVICE_V2_URL}/markdown/${markdown.key}/members`}
-              isAdministrator={isAdministrator}
-              documentName={markdown.name}
-              copyLink={() => (typeof window !== 'undefined' ? window.location.href : '')}
-              size="tiny"
-            />
-          </div>
-        )}
-      </div>
-      <div className="jk-row top ht-100" style={{}}>
-        {fileKeys.length > 1 && !isMobile && (
-          <nav
-            className="sticky-top bc-we jk-br jk-pg jk-col gap"
-            style={{
-              margin: 'var(--pad-sm) var(--pad-md)',
-              width: '220px',
-              minWidth: '220px',
-              overflowY: 'auto',
-            }}
-          >
-            <p className="tx-s fw-bd">
-              <T className="tt-se">files</T>
-            </p>
-            {fileKeys.map((key) => {
-              const isActive = selected === key;
-              return (
-                <Button
-                  key={key}
-                  type="ghost"
-                  size="small"
-                  onClick={() => setSelected(key)}
-                  className={classNames('left', { 'fw-br bc-ht-lt cr-tx-ht': isActive })}
-                  style={{
-                    justifyContent: 'left',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    width: '100%',
-                  }}
-                >
-                  {files[key].name ?? key}
-                </Button>
-              );
-            })}
-          </nav>
-        )}
+    <TwoContentLayout
+      tabs={oneTab(
+        <div className="jk-row top ht-100" style={{ overflow: 'hidden' }}>
+          {hasMultipleFiles && !isMobile && (
+            <nav
+              className="bc-we jk-br jk-pg jk-col gap nowrap"
+              style={{
+                margin: '0 var(--pad-md)',
+                width: '220px',
+                minWidth: '220px',
+                overflowY: 'auto',
+                height: '100%',
+              }}
+            >
+              <SidebarTree tree={tree} prefix="" navMap={navMap} selectedPath={selectedPath} onSelect={setSelectedPath} />
+            </nav>
+          )}
 
-        <div className="ht-100 ow-ao flex-1 jk-col nowrap gap top" style={{ overflowY: 'auto', margin: 'var(--pad-sm) var(--pad-md)' }}>
-          <div
-            className="jk-row space-between wh-100 bc-we jk-pg-xsm jk-br sticky-top"
-            style={{
-              borderBottom: '1px solid var(--t-color-gray-3)',
-              zIndex: 10,
-              boxSizing: 'border-box',
-            }}
-          >
-            {isMobile && fileKeys.length > 1 ? (
-              <Select
-                options={fileKeys.map((key) => ({ value: key, label: files[key].name ?? key }))}
-                selectedOption={{ value: selected, label: files[selected]?.name ?? selected }}
-                onChange={({ value }) => setSelected(value)}
-              />
-            ) : (
-              <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--t-color-gray-7)' }}>{fileName}</span>
-            )}
-            <SplitButton source={source} fileName={fileName} rawUrl={rawUrl} />
-          </div>
+          <div className="ht-100 flex-1 jk-col nowrap top" style={{ margin: '0 var(--pad-md)', overflowY: 'auto' }}>
+            <div
+              className={classNames('jk-row space-between bc-we jk-pg-xsm-tb jk-pg-lg-rl jk-br read-width wh-100', { 'wh-100': isMobile && hasMultipleFiles })}
+              style={{
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              {isMobile && hasMultipleFiles && (
+                <Select
+                  options={selectOptions}
+                  selectedOption={{ value: selectedPath, label: currentFile?.name ?? selectedPath }}
+                  onChange={({ value }) => setSelectedPath(value)}
+                />
+              )}
+              <h3>{title}</h3>
+              <SplitButton source={source} fileName={fileName} rawUrl={rawUrl} />
+            </div>
 
-          <div className="read-width wh-100 jk-pg-lg bc-we jk-br-ie">
-            <MdMathViewer source={source} />
+            <div className="read-width wh-100 jk-pg-lg bc-we jk-br-ie">
+              <MdMathViewer source={body} />
+            </div>
+          </div>
+        </div>,
+      )}
+      headerClassName="jk-row gap space-between"
+    >
+      <h2>{markdown.name}</h2>
+      {isAdministrator && (
+        <div className="jk-row gap">
+          <Link href={`/e/${markdown.key}`} className="jk-row">
+            <Button type="secondary" icon={<EditIcon size="small" />}>
+              <T className="tt-se">edit</T>
+            </Button>
+          </Link>
+          <DocumentMembersButton
+            key="members"
+            members={markdown.members}
+            managers={{}}
+            spectators={{}}
+            documentOwner={markdown.owner}
+            saveUrl={`${JUKI_SERVICE_V2_URL}/markdown/${markdown.key}/members`}
+            isAdministrator={isAdministrator}
+            documentName={markdown.name}
+            copyLink={() => (typeof window !== 'undefined' ? window.location.href : '')}
+          />
+          <div className="jk-row">
+            <LoginUser withLabel />
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </TwoContentLayout>
   );
 }

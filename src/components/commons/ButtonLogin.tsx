@@ -14,7 +14,7 @@ export const ButtonLogin = () => {
 
   return (
     <LoginUser
-      collapsed={false}
+      withLabel
       isHorizontal={true}
       onSeeMyProfile={(nickname, companyKey) => pushRoute(jukiAppRoutes.JUDGE().profiles.view({ nickname, companyKey }))}
     />

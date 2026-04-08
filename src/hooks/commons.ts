@@ -12,5 +12,6 @@ export {
   useResizeDetector,
   useFetcher,
   useStableRef,
+  usePageStore,
 } from '@juki-team/base-ui';
 export { useMemo, useEffect, useState, useRef, useCallback } from 'react';

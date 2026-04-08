@@ -1,18 +1,20 @@
 'use client';
 
-import { AiChatPanel } from '@juki-team/base-ui';
 import { CODE_LANGUAGE } from '@juki-team/commons';
 import { UIMessage } from 'ai';
 import {
+  AiChatPanel,
   ArrowBackIcon,
   Button,
   DateLiteral,
   DocumentMembersButton,
   DownloadIcon,
   ExpandMoreIcon,
-  InfoIIcon,
   LoadingIcon,
+  LoginUser,
   Modal,
+  Popover,
+  SaveIcon,
   SpinIcon,
   T,
   TwoContentLayout,
@@ -42,7 +44,7 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeIcon closeOnKeyEscape closeOnClickOverlay className="jk-pg">
       <div className="jk-col stretch gap nowrap wh-100">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="jk-row space-between">
           <h3 style={{ margin: 0 }}>
             <T className="tt-se">document templates</T>
           </h3>
@@ -55,12 +57,12 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
           onChange={(e) => setSearch(e.target.value)}
           style={{
             padding: '6px 10px',
-            border: '1px solid var(--t-color-gray-4)',
+            border: '1px solid var(--cr-ht)',
             borderRadius: '4px',
             fontSize: '0.875rem',
             outline: 'none',
-            background: 'var(--t-color-bg)',
-            color: 'var(--t-color-text)',
+            background: 'var(--cr-we)',
+            color: 'var(--cr-tx)',
           }}
         />
 
@@ -72,7 +74,7 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
           ))}
         </div>
 
-        <div style={{ overflow: 'auto', flex: 1 }}>
+        <div className="ow-ao flex-1">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '8px' }}>
             {filtered.map((template) => (
               <Button
@@ -94,11 +96,15 @@ function TemplatesModal({ isOpen, onClose, onLoad }: { isOpen: boolean; onClose:
                 }}
               >
                 <span>{template.name}</span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--t-color-gray-6)', fontWeight: 400 }}>{template.category}</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--cr-tx-mt)', fontWeight: 400 }}>{template.category}</span>
               </Button>
             ))}
           </div>
-          {filtered.length === 0 && <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--t-color-gray-6)' }}>No templates found</div>}
+          {filtered.length === 0 && (
+            <div className="ta-cr cr-tx-mt" style={{ padding: '2rem' }}>
+              No templates found
+            </div>
+          )}
         </div>
       </div>
     </Modal>
@@ -120,7 +126,7 @@ const toEntityMembersDTO = (members: EntityMembersResponseDTO) => {
   };
 };
 
-type CodeLanguages = CodeLanguage.MARKDOWN | CodeLanguage.MDX;
+type CodeLanguages = CodeLanguage.MARKDOWN | CodeLanguage.MDX | CodeLanguage.JSON;
 
 const orderFiles = (files: CodeEditorFiles<CodeLanguages>) => {
   const filesArray: CodeEditorFiles<CodeLanguages> = {};
@@ -135,6 +141,7 @@ const orderFiles = (files: CodeEditorFiles<CodeLanguages>) => {
       protected: file.protected ?? false,
       folderPath: file.folderPath || '',
       description: file.description || '',
+      active: file.active ?? false,
     };
   }
   return filesArray;
@@ -260,43 +267,13 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
 
   return (
     <TwoContentLayout
-      tabButtons={[
-        <div key="state" className="tx-t jk-row gap" style={{ opacity: 0.6 }}>
-          {isLoading || isValidating ? (
-            <SpinIcon />
-          ) : (
-            <InfoIIcon
-              filledCircle
-              size="tiny"
-              className={classNames({
-                'cr-wg': currentBodyString !== newBodyString,
-                'cr-ss': currentBodyString === newBodyString,
-              })}
-              data-tooltip-id="jk-tooltip"
-              data-tooltip-content={currentBodyString !== newBodyString ? 'changes not saved' : 'changes saved'}
-            />
-          )}
-          <DateLiteral date={new Date(markdown.updatedAt)} />
-        </div>,
-        <DocumentMembersButton
-          key="members"
-          members={markdown.members}
-          managers={{}}
-          spectators={{}}
-          documentOwner={markdown.owner}
-          saveUrl={`${JUKI_SERVICE_V2_URL}/markdown/${markdown.key}/members`}
-          isAdministrator={getUserKey(markdown.owner.nickname, markdown.owner.company.key) === getUserKey(user.nickname, user.company.key)}
-          documentName={markdown.name}
-          copyLink={() => (typeof window !== 'undefined' ? window.location.href : '')}
-          size="tiny"
-        />,
-      ]}
+      tabButtons={[]}
       tabs={oneTab(
         <div className="jk-row nowrap gap top ht-100" style={{ '--chat-right-panel-width': 'calc(100vw / 3.5)' } as CSSProperties}>
           <div className="flex-1 ht-100" style={{ maxWidth: editorWidth }}>
             <Suspense
               fallback={
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <div className="jk-row center ht-100">
                   <LoadingIcon />
                 </div>
               }
@@ -317,6 +294,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                           protected: false,
                           folderPath: '',
                           description: '',
+                          active: true,
                         },
                       }
                 }
@@ -324,6 +302,7 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
                 languages={[
                   { value: CodeLanguage.MARKDOWN, label: 'Markdown' },
                   { value: CodeLanguage.MDX, label: 'MDX' },
+                  { value: CodeLanguage.JSON, label: 'JSON' },
                 ]}
                 onCurrentFileNameChange={setCurrentFileName}
                 onFilesChange={setFiles}
@@ -362,10 +341,9 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
       )}
     >
       <TemplatesModal isOpen={showTemplates} onClose={() => setShowTemplates(false)} onLoad={setCode} />
-
-      <div className="jk-row gap jk-pg-xsm wh-100">
-        <Link href="/">
-          <Button type="ghost" icon={<ArrowBackIcon />} tooltipContent="back home" />
+      <div className="jk-row gap wh-100">
+        <Link href="/list" className="jk-row">
+          <Button type="ghost" icon={<ArrowBackIcon size="small" />} tooltipContent="back home" />
         </Link>
         <input
           value={name}
@@ -377,15 +355,39 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
             outline: 'none',
             fontWeight: 'bold',
             fontSize: 'inherit',
-            color: 'var(--t-color-primary)',
+            color: 'var(--cr-tx-ht)',
             minWidth: '120px',
             width: `${Math.max(name.length, 8)}ch`,
             padding: '0 2px',
             transition: 'border-color 150ms',
           }}
-          onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--t-color-primary)')}
+          onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--cr-io)')}
           onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
         />
+
+        <div key="state" className="tx-t jk-row gap">
+          {isLoading || isValidating ? (
+            <SpinIcon size="small" />
+          ) : (
+            <Popover
+              content={
+                <div className="jk-col">
+                  <T className="tt-se">{currentBodyString !== newBodyString ? 'changes not saved' : 'changes saved'}</T>
+                  <DateLiteral date={new Date(markdown.updatedAt)} />
+                </div>
+              }
+              popoverClassName="bc-sf-hi jk-br-ie elevation-1 jk-pg-xsm"
+            >
+              <SaveIcon
+                size="tiny"
+                className={classNames({
+                  'cr-wg': currentBodyString !== newBodyString,
+                  'cr-ss': currentBodyString === newBodyString,
+                })}
+              />
+            </Popover>
+          )}
+        </div>
         <div className="flex-1" />
         <Button
           size="small"
@@ -414,9 +416,23 @@ export function MarkdownViewPage({ markdown: fallbackData }: { markdown: Markdow
             <T className="tt-se">view document</T>
           </Button>
         </Link>
-        <Button onClick={() => setShowTemplates(true)} icon={<ExpandMoreIcon size="small" />} size="small" type="secondary">
+        <Button onClick={() => setShowTemplates(true)} icon={<ExpandMoreIcon size="small" />} type="secondary">
           <T className="tt-se">templates</T>
         </Button>
+        <DocumentMembersButton
+          key="members"
+          members={markdown.members}
+          managers={{}}
+          spectators={{}}
+          documentOwner={markdown.owner}
+          saveUrl={`${JUKI_SERVICE_V2_URL}/markdown/${markdown.key}/members`}
+          isAdministrator={getUserKey(markdown.owner.nickname, markdown.owner.company.key) === getUserKey(user.nickname, user.company.key)}
+          documentName={markdown.name}
+          copyLink={() => (typeof window !== 'undefined' ? window.location.href : '')}
+        />
+        <div className="jk-row">
+          <LoginUser withLabel />
+        </div>
       </div>
     </TwoContentLayout>
   );

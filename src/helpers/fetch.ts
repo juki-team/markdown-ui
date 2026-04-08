@@ -36,7 +36,7 @@ export const get = async <T extends ContentResponse<unknown> | ContentsResponse<
       message: (error as Error)?.message ?? `Error on get "${url}"`,
       errors: [
         {
-          code: ErrorCode.ERR500,
+          code: ErrorCode.INTERNAL_SERVER_ERROR,
           detail: (error as Error)?.message ?? `Error on get "${url}"`,
           message: (error as Error)?.stack ?? `Error on get "${url}" ${error}`,
         },

@@ -6,6 +6,7 @@ export {
   ErrorBoundary,
   JukiProviders,
   NewVersionAvailable,
+  FirstLoginWrapper,
   Button,
   UserStoreProvider,
   UserChip,
@@ -27,6 +28,8 @@ export {
   DocumentMembersButton,
   DateLiteral,
   TextArea,
+  AiChatPanel,
+  Popover,
 } from '@juki-team/base-ui';
 
 export * from './NotFoundCard';
