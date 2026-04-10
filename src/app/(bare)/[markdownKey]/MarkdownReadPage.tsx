@@ -380,7 +380,7 @@ export function MarkdownReadPage({ markdown }: { markdown: MarkdownResponseDTO }
         <div className="jk-row top ht-100" style={{ overflow: 'hidden' }}>
           {hasMultipleFiles && !isMobile && (
             <nav
-              className="bc-we jk-br jk-pg jk-col gap nowrap"
+              className="bc-we jk-br jk-pg jk-col gap nowrap top"
               style={{
                 margin: '0 var(--pad-md)',
                 width: '220px',

@@ -12,11 +12,11 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(ably@2.21.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@juki-team/base-ui':
-        specifier: ^1.4.100
-        version: 1.4.100(817b393a15bf816c8b46576c43fb7296)
+        specifier: ^1.4.103
+        version: 1.4.103(817b393a15bf816c8b46576c43fb7296)
       '@juki-team/commons':
-        specifier: ^0.1.18
-        version: 0.1.18
+        specifier: ^0.1.22
+        version: 0.1.22
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(next@16.2.2(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.51.0))(react@19.2.4)(vue@3.5.30(typescript@6.0.2))
@@ -621,8 +621,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@juki-team/base-ui@1.4.100':
-    resolution: {integrity: sha512-daViTZBvRtPxb6AWZSj4a9cmE0HfjRCPNNxwTQpKRRvcNPkaHMIiOucfN9Xkt94AaPt2g0GPXiCO8dIhF6aIkw==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.100/a4d556735bb7ec6cb79f4dc5cd8c4db2ac949be5}
+  '@juki-team/base-ui@1.4.103':
+    resolution: {integrity: sha512-SZM8gnefwRvxN4PF1AwBNFby96z4mF9w3+nyDCgmaxuyvdUTvLKGAiNBmus+ov6F58jE7hUu8kt6Lf60UfaDlw==, tarball: https://npm.pkg.github.com/download/@juki-team/base-ui/1.4.103/c79c33af388714e576e6347e5cc08b7697e93a75}
     engines: {node: '>=24'}
     peerDependencies:
       '@ably/spaces': ^0.5.2
@@ -633,8 +633,8 @@ packages:
       react-dom: ^19
       swr: ^2
 
-  '@juki-team/commons@0.1.18':
-    resolution: {integrity: sha512-LY3NvqAp+ddA9EXo2RprMzVzqNtbR3ukz/aeeCKlF57JQSio9bYZa8sc6laz/R0iyGMGN9JWWIq1YEZThs+Gpw==, tarball: https://npm.pkg.github.com/download/@juki-team/commons/0.1.18/aa10b8d3e10a5ce6e741c701170f5fa254e23ce3}
+  '@juki-team/commons@0.1.22':
+    resolution: {integrity: sha512-SHy18y+Yp2vp3KGrFYWFVDGwUEHt3JQfC5BhC5oai2c2v0xJFyn/yF7wKtuaZEOD3w3g4N44XHtwtmzAWJVq7g==, tarball: https://npm.pkg.github.com/download/@juki-team/commons/0.1.22/8c5172885c36eeaeb70647b414b2fddc1c1b39e7}
 
   '@lezer/common@1.5.1':
     resolution: {integrity: sha512-6YRVG9vBkaY7p1IVxL4s44n5nUnaNnGM2/AckNgYOnxTG2kWh1vR8BMxPseWPjRNpb5VtXnMpeYAEAADoRV1Iw==}
@@ -5689,7 +5689,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@juki-team/base-ui@1.4.100(817b393a15bf816c8b46576c43fb7296)':
+  '@juki-team/base-ui@1.4.103(817b393a15bf816c8b46576c43fb7296)':
     dependencies:
       '@ably/spaces': 0.5.2(ably@2.21.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@ai-sdk/react': 3.0.148(react@19.2.4)(zod@4.3.6)
@@ -5717,7 +5717,7 @@ snapshots:
       '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@handsontable/react-wrapper': 17.0.1(handsontable@17.0.1)
       '@hookform/resolvers': 5.2.2(react-hook-form@7.72.1(react@19.2.4))
-      '@juki-team/commons': 0.1.18
+      '@juki-team/commons': 0.1.22
       '@mdx-js/mdx': 3.1.1
       '@milkdown/components': 7.20.0(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/view@6.41.0)(typescript@6.0.2)
       '@milkdown/core': 7.20.0
@@ -5790,7 +5790,7 @@ snapshots:
       - use-sync-external-store
       - zod
 
-  '@juki-team/commons@0.1.18': {}
+  '@juki-team/commons@0.1.22': {}
 
   '@lezer/common@1.5.1': {}
 
