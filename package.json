@@ -21,6 +21,7 @@
     "@ably/spaces": "^0.5.2",
     "@juki-team/base-ui": "^1.4.103",
     "@juki-team/commons": "^0.1.22",
+    "@marp-team/marp-core": "^4.3.0",
     "@vercel/analytics": "^2.0.1",
     "ably": "^2.21.0",
     "ai": "^6.0.146",
